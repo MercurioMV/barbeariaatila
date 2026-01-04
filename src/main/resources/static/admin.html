@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Agendamentos</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos adicionais específicos para a tela Admin, se necessário */
+        .admin-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+        .admin-container h2, label {
+            color: #d4af37;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .agendamento-card {
+            background: #2b2b2b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 5px solid #d4af37;
+            position: relative;
+        }
+        .agendamento-card h4 {
+            margin-top: 0;
+            color: #d4af37;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .agendamento-card p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .btn-remover {
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-remover:hover {
+            background: #cc0000;
+        }
+        #lista-agendamentos {
+            margin-top: 20px;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h1>Painel Administrativo</h1>
+
+    <div id="login-form-admin">
+        <h2>Acesso Administrativo</h2>
+        <input type="password" id="senha-admin-input" placeholder="Digite a Senha do Administrador" style="padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 5px;">
+        <button class="btn primary" id="btn-login-admin" style="width: 100%;">Fazer Login</button>
+        <p id="login-message" style="color: red; margin-top: 10px; display: none;">Senha incorreta.</p>
+        <hr class="linha-separadora" style="margin-top: 20px;">
+    </div>
+
+
+    <div id="admin-content" style="display: none;">
+
+        <h2>Trocar Senha</h2>
+        <form id="form-troca-senha" style="margin-bottom: 30px; background: #2b2b2b; padding: 20px; border-radius: 8px;">
+            <label for="senha-atual">Senha Atual</label>
+            <input type="password" id="senha-atual" required style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+
+            <label for="nova-senha">Nova Senha</label>
+            <input type="password" id="nova-senha" required style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+
+            <label for="confirmar-senha">Confirmar Nova Senha</label>
+            <input type="password" id="confirmar-senha" required style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+
+            <button type="submit" class="btn primary">Atualizar Senha</button>
+            <p id="mensagem-troca-senha" style="color: #4CAF50; margin-top: 10px; display: none;"></p>
+        </form>
+
+        <h2>Agendamentos Ativos</h2>
+        <div id="lista-agendamentos">
+            <p style="text-align: center; color: #999;">Carregando agendamentos...</p>
+        </div>
+    </div>
+</div>
+
+<script src="js/admin.js"></script>
+
+</body>
+</html>

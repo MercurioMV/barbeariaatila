@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Agendamento - Barbearia do Átila</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container" style="display: flex;">
+    <div class="foto no-print">
+        <a href="admin.html" class="link-logo-secreto" title="Agendamento">
+            <img src="images/logo.jpeg" alt="Logo da Barbearia" />
+        </a>
+    </div>
+
+    <div class="card">
+        <h2>Agendamento</h2>
+        <hr class="linha-separadora" />
+        <p><strong>Horário de Funcionamento:</strong> 9h às 19h</p>
+        <p><strong>Dias de Atendimento:</strong> Domingo a Sábado (Exceto Segunda-feira)</p>
+        <p><strong>Intervalo:</strong> 12h às 13h</p>
+        <hr class="linha-separadora" />
+
+        <form id="form-agendamento">
+            <div id="etapa1" class="etapa ativa">
+                <label for="nome">Nome completo do Cliente</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required />
+
+                <label for="telefone">Telefone/WhatsApp</label>
+                <input type="tel" id="telefone" name="telefone" placeholder="(99) 99999-9999" required />
+
+                <button type="button" class="botao" id="proximaEtapa">Próxima</button>
+            </div>
+
+            <div id="etapa2" class="etapa">
+                <p style="margin-bottom: 12px;"><strong>Serviços (escolha um ou mais)</strong></p>
+                <div class="servicos">
+                    <label><span>Corte - R$40,00</span><input type="checkbox" value="40"></label>
+                    <label><span>Barba - R$40,00</span><input type="checkbox" value="40"></label>
+                    <label><span>Corte e Sobrancelha - R$55,00</span><input type="checkbox" value="55"></label>
+                    <label><span>Corte e Barba - R$80,00</span><input type="checkbox" value="80"></label>
+                    <label><span>Corte e Selagem - R$115,00</span><input type="checkbox" value="115"></label>
+                    <label><span>Selagem - R$75,00</span><input type="checkbox" value="75"></label>
+                    <label><span>Sobrancelha - R$15,00</span><input type="checkbox" value="15"></label>
+                </div>
+
+                <hr class="linha-separadora">
+                <p><strong>Total Estimado:</strong> R$ <span id="total">0,00</span></p>
+                <hr class="linha-separadora">
+
+                <label for="data">Data do agendamento</label>
+                <input type="date" id="data" name="data" required />
+
+                <label for="hora">Horário disponível (intervalos de 10 min)</label>
+                <input type="time" id="hora" name="hora" required step="600" />
+
+                <button type="button" class="botao" id="voltarEtapa">Voltar</button>
+                <button type="submit" class="botao">Agendar</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
