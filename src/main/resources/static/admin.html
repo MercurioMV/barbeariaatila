@@ -56,6 +56,26 @@
         .btn-remover:hover {
             background: #cc0000;
         }
+        /* NOVO BOTÃO VERDE */
+    .btn-concluir {
+    background: #00C851; /* Verde Bonito */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    }
+
+    .btn-concluir:hover {
+    background: #007E33;
+    }
+
+    .agendamento-card h4 {
+    display: flex;
+    justify-content: space-between; /* Separa nome dos botões */
+    align-items: center;
+    }
         #lista-agendamentos {
             margin-top: 20px;
         }
@@ -70,7 +90,8 @@
 
     <div id="login-form-admin">
         <h2>Acesso Administrativo</h2>
-        <input type="password" id="senha-admin-input" placeholder="Digite a Senha do Administrador" style="padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 5px;">
+        <input type="password" id="senha-admin-input" placeholder="Digite a Senha do Administrador"
+               style="padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 5px;">
         <button class="btn primary" id="btn-login-admin" style="width: 100%;">Fazer Login</button>
         <p id="login-message" style="color: red; margin-top: 10px; display: none;">Senha incorreta.</p>
         <hr class="linha-separadora" style="margin-top: 20px;">
@@ -80,15 +101,19 @@
     <div id="admin-content" style="display: none;">
 
         <h2>Trocar Senha</h2>
-        <form id="form-troca-senha" style="margin-bottom: 30px; background: #2b2b2b; padding: 20px; border-radius: 8px;">
+        <form id="form-troca-senha"
+              style="margin-bottom: 30px; background: #2b2b2b; padding: 20px; border-radius: 8px;">
             <label for="senha-atual">Senha Atual</label>
-            <input type="password" id="senha-atual" required style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+            <input type="password" id="senha-atual" required
+                   style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
 
             <label for="nova-senha">Nova Senha</label>
-            <input type="password" id="nova-senha" required style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+            <input type="password" id="nova-senha" required
+                   style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
 
             <label for="confirmar-senha">Confirmar Nova Senha</label>
-            <input type="password" id="confirmar-senha" required style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+            <input type="password" id="confirmar-senha" required
+                   style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
 
             <button type="submit" class="btn primary">Atualizar Senha</button>
             <p id="mensagem-troca-senha" style="color: #4CAF50; margin-top: 10px; display: none;"></p>
@@ -101,7 +126,37 @@
     </div>
 </div>
 
-<script src="js/admin.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    // ADICIONEI 'getDoc' NA LISTA ABAIXO:
+    import { getFirestore, collection, getDocs, getDoc, deleteDoc, addDoc, doc, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 🔴 SUAS CONFIGURAÇÕES (Mantenha as suas chaves aqui)
+    const firebaseConfig = {
+        apiKey: "AIzaSyAuk5iamUAqVkRS2nUiYGt23qZ7RGK0-mE",
+        authDomain: "barbearia-atila.firebaseapp.com",
+        projectId: "barbearia-atila",
+        storageBucket: "barbearia-atila.firebasestorage.app",
+        messagingSenderId: "992801818692",
+        appId: "1:992801818692:web:1fab6f506c3c2282a91411",
+        measurementId: "G-R4TCNZ157J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Expõe tudo para o admin.js
+    window.db = db;
+    window.collection = collection;
+    window.getDocs = getDocs;
+    window.getDoc = getDoc; // <--- Novo
+    window.deleteDoc = deleteDoc;
+    window.addDoc = addDoc;
+    window.doc = doc;
+    window.query = query;
+
+    import("./js/admin.js");
+</script>
 
 </body>
 </html>
