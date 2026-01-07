@@ -19,7 +19,7 @@
         <h2>Agendamento</h2>
         <hr class="linha-separadora" />
         <p><strong>Horário de Funcionamento:</strong> 9h às 19h</p>
-        <p><strong>Dias de Atendimento:</strong> Domingo a Sábado (Exceto Segunda-feira)</p>
+        <p><strong>Dias de Atendimento:</strong> Sábado a Sexta (Exceto Segunda-feira e Domingo)</p>
         <p><strong>Intervalo:</strong> 12h às 13h</p>
         <hr class="linha-separadora" />
 
@@ -64,7 +64,37 @@
     </div>
 </div>
 
-<script src="js/script.js"></script>
+<script type="module">
+    // Importa as ferramentas do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 🔴 COLE AQUI O CONFIG QUE VOCÊ COPIOU DO SITE DO FIREBASE
+    const firebaseConfig = {
+    apiKey: "AIzaSyAuk5iamUAqVkRS2nUiYGt23qZ7RGK0-mE",
+    authDomain: "barbearia-atila.firebaseapp.com",
+    projectId: "barbearia-atila",
+    storageBucket: "barbearia-atila.firebasestorage.app",
+    messagingSenderId: "992801818692",
+    appId: "1:992801818692:web:1fab6f506c3c2282a91411",
+    measurementId: "G-R4TCNZ157J"
+  };
+
+    // Inicializa
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Deixa o banco acessível para o script.js
+    window.db = db;
+    window.collection = collection;
+    window.addDoc = addDoc;
+    window.getDocs = getDocs;
+    window.query = query;
+    window.where = where;
+
+    // Carrega seu script DEPOIS do Firebase estar pronto
+    import("./js/script.js");
+</script>
 
 </body>
 </html>
