@@ -1,5 +1,5 @@
 // ===============================
-// ADMINISTRAÇÃO MANUAL (CHECK-OUT)
+// ADMINISTRAÇÃO: FIREBASE + SENHA
 // ===============================
 
 const listaAgendamentos = document.getElementById("lista-agendamentos");
@@ -8,12 +8,28 @@ const adminContent = document.getElementById("admin-content");
 const btnLoginAdmin = document.getElementById("btn-login-admin");
 const senhaAdminInput = document.getElementById("senha-admin-input");
 
-const SENHA_PADRAO = "4t1l4";
+// Elementos da Troca de Senha
+const formTrocaSenha = document.getElementById("form-troca-senha");
+const senhaAtualInput = document.getElementById("senha-atual");
+const novaSenhaInput = document.getElementById("nova-senha");
+const confirmarSenhaInput = document.getElementById("confirmar-senha");
+const msgTroca = document.getElementById("mensagem-troca-senha");
 
-// 1. Login
+// Configuração de Senha
+const SENHA_PADRAO = "4t1l4";
+const STORAGE_KEY = "senha_admin_barbearia"; // Chave para salvar no navegador
+
+// Função para pegar a senha válida (do navegador ou a padrão)
+function getSenhaReal() {
+    return localStorage.getItem(STORAGE_KEY) || SENHA_PADRAO;
+}
+
+// 1. Lógica de Login
 btnLoginAdmin.addEventListener("click", () => {
-    const senha = senhaAdminInput.value;
-    if (senha === SENHA_PADRAO) {
+    const senhaDigitada = senhaAdminInput.value;
+    const senhaReal = getSenhaReal();
+
+    if (senhaDigitada === senhaReal) {
         loginFormAdmin.style.display = 'none';
         adminContent.style.display = 'block';
         carregarListaFirebase();
@@ -22,7 +38,45 @@ btnLoginAdmin.addEventListener("click", () => {
     }
 });
 
-// 2. Carrega Lista (Com limpeza apenas de dias ANTERIORES)
+// 2. Lógica de Trocar Senha (RECUPERADA)
+if (formTrocaSenha) {
+    formTrocaSenha.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const atual = senhaAtualInput.value;
+        const nova = novaSenhaInput.value;
+        const confirmar = confirmarSenhaInput.value;
+        const senhaReal = getSenhaReal();
+
+        // Validações
+        if (atual !== senhaReal) {
+            return alert("A senha atual está incorreta.");
+        }
+        if (nova.length < 4) {
+            return alert("A nova senha deve ter pelo menos 4 letras/números.");
+        }
+        if (nova !== confirmar) {
+            return alert("A nova senha e a confirmação não batem.");
+        }
+
+        // Salva a nova senha no navegador
+        localStorage.setItem(STORAGE_KEY, nova);
+
+        // Feedback visual
+        msgTroca.style.display = "block";
+        msgTroca.textContent = "Senha alterada com sucesso!";
+        msgTroca.style.color = "#00C851"; // Verde
+
+        // Limpa os campos
+        formTrocaSenha.reset();
+
+        setTimeout(() => {
+            msgTroca.style.display = "none";
+        }, 3000);
+    });
+}
+
+// 3. Carrega Lista do Firebase (Igual ao anterior)
 async function carregarListaFirebase() {
     listaAgendamentos.innerHTML = '<p style="text-align:center; color:#d4af37">Atualizando agenda...</p>';
 
@@ -31,7 +85,7 @@ async function carregarListaFirebase() {
 
         const agendamentos = [];
         const hoje = new Date();
-        hoje.setHours(0,0,0,0); // Zera hora para comparar apenas data
+        hoje.setHours(0,0,0,0);
 
         const promessasDeLimpeza = [];
 
@@ -39,9 +93,9 @@ async function carregarListaFirebase() {
             const dados = doc.data();
             const dataAgendamento = new Date(dados.data + "T00:00");
 
-            // LIMPEZA AUTOMÁTICA: Só remove se for de ONTEM ou antes.
+            // Limpeza Automática (Ontem pra trás)
             if (dataAgendamento < hoje) {
-                console.log("Arquivando agendamento de dia anterior:", dados.nome);
+                console.log("Arquivando antigo:", dados.nome);
                 promessasDeLimpeza.push(arquivarAutomatico(doc.id, dados));
             } else {
                 agendamentos.push({ id: doc.id, ...dados });
@@ -50,7 +104,7 @@ async function carregarListaFirebase() {
 
         if (promessasDeLimpeza.length > 0) await Promise.all(promessasDeLimpeza);
 
-        // Ordena por horário
+        // Ordena
         agendamentos.sort((a, b) => {
             const dateA = new Date(a.data + 'T' + a.hora);
             const dateB = new Date(b.data + 'T' + b.hora);
@@ -65,7 +119,7 @@ async function carregarListaFirebase() {
     }
 }
 
-// 3. Renderiza com os DOIS botões (ESSA É A PARTE QUE FALTAVA)
+// 4. Renderiza na Tela
 function renderizarLista(lista) {
     listaAgendamentos.innerHTML = '';
 
@@ -80,13 +134,12 @@ function renderizarLista(lista) {
 
         const dataFormatada = new Date(ag.data + "T00:00").toLocaleDateString('pt-BR');
 
-        // AQUI ESTÃO OS DOIS BOTÕES: ✔ e X
         item.innerHTML = `
             <h4>
                 ${ag.nome}
                 <div>
-                    <button onclick="concluirServico('${ag.id}')" class="btn-concluir" title="Concluir e Arquivar">✔</button>
-                    <button onclick="cancelarServico('${ag.id}')" class="btn-remover" title="Cancelar Agendamento">X</button>
+                    <button onclick="concluirServico('${ag.id}')" class="btn-concluir" title="Concluir">✔</button>
+                    <button onclick="cancelarServico('${ag.id}')" class="btn-remover" title="Cancelar">X</button>
                 </div>
             </h4>
             <p><b>Serviços:</b> ${ag.servicos}</p>
@@ -98,46 +151,35 @@ function renderizarLista(lista) {
     });
 }
 
-// 4. FUNÇÃO DO BOTÃO VERDE (✔): Move para Histórico
+// 5. Ações dos Botões (Concluir e Cancelar)
 window.concluirServico = async function(id) {
-    if(!confirm("Confirmar conclusão do serviço? Isso libera o horário.")) return;
-
+    if(!confirm("Confirmar conclusão e liberar horário?")) return;
     try {
         const docRef = window.doc(window.db, "agendamentos", id);
         const docSnap = await window.getDoc(docRef);
 
         if (docSnap.exists()) {
-            const dados = docSnap.data();
-
             await window.addDoc(window.collection(window.db, "historico"), {
-                ...dados,
+                ...docSnap.data(),
                 status: "Concluido",
                 arquivadoEm: new Date().toISOString()
             });
-
             await window.deleteDoc(docRef);
-
-            alert("Serviço concluído e arquivado!");
+            alert("Concluído!");
             carregarListaFirebase();
         }
-    } catch (e) {
-        console.error("Erro:", e);
-        alert("Erro ao concluir.");
-    }
+    } catch (e) { console.error(e); alert("Erro ao concluir."); }
 }
 
-// 5. FUNÇÃO DO BOTÃO VERMELHO (X): Cancela
 window.cancelarServico = async function(id) {
-    if(!confirm("Cancelar este agendamento? (Isso apaga permanentemente)")) return;
-
+    if(!confirm("Cancelar agendamento permanentemente?")) return;
     try {
         await window.deleteDoc(window.doc(window.db, "agendamentos", id));
-        alert("Agendamento cancelado!");
+        alert("Cancelado!");
         carregarListaFirebase();
-    } catch (e) { console.error("Erro:", e); }
+    } catch (e) { console.error(e); }
 }
 
-// 6. Auxiliar
 async function arquivarAutomatico(id, dados) {
     try {
         await window.addDoc(window.collection(window.db, "historico"), {
@@ -149,6 +191,7 @@ async function arquivarAutomatico(id, dados) {
     } catch (e) { console.error(e); }
 }
 
+// Enter para login
 senhaAdminInput.addEventListener("keypress", (e) => {
     if (e.key === 'Enter') btnLoginAdmin.click();
 });
