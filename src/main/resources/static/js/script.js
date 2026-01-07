@@ -1,4 +1,49 @@
 // ===============================
+// ROTINA DE LIMPEZA (GARBAGE COLLECTION)
+// ===============================
+function limparAgendamentosAntigos() {
+    const agora = new Date();
+    // Define o limite como "ontem"
+    agora.setDate(agora.getDate() - 1);
+
+    let agendamentos = carregarAgendamentos();
+    const totalAntes = agendamentos.length;
+
+    // Filtra: Mantém apenas agendamentos futuros ou de hoje
+    agendamentos = agendamentos.filter(ag => {
+        const dataAgendamento = new Date(ag.data + "T" + ag.hora);
+        return dataAgendamento > agora;
+    });
+
+    if (agendamentos.length !== totalAntes) {
+        console.log(`Limpando ${totalAntes - agendamentos.length} agendamentos antigos...`);
+        localStorage.setItem('agendamentosBarbearia', JSON.stringify(agendamentos));
+        // Se estiver na tela de admin, recarrega a lista
+        if (typeof inicializarLista === "function") {
+            inicializarLista();
+        }
+    }
+}
+
+// Chame isso assim que o script carregar
+document.addEventListener('DOMContentLoaded', () => {
+    limparAgendamentosAntigos();
+    // ... resto do seu código ...
+});
+
+// ===============================
+// CONFIGURAÇÃO: DIAS E DATAS FECHADAS
+// ===============================
+// 0 = Domingo, 1 = Segunda, ... 6 = Sábado
+const DIAS_SEMANA_FECHADOS = [0, 1]; // Fechado Domingo e Segunda
+
+// Datas específicas (Feriados ou folgas manuais)
+const DATAS_BLOQUEADAS = [
+    "2026-12-25", // Exemplo: Natal
+    "2026-01-01"  // Exemplo: Ano Novo
+];
+
+// ===============================
 // FUNÇÃO DE UTILIDADE: DATA CORRETA
 // ===============================
 function getTodayDateString() {
@@ -38,22 +83,98 @@ const btnVoltar = document.getElementById("voltarEtapa");
 const form = document.getElementById("form-agendamento");
 const totalSpan = document.getElementById("total");
 
-function carregarAgendamentos() {
-    const dadosSalvos = localStorage.getItem('agendamentosBarbearia');
-    return dadosSalvos ? JSON.parse(dadosSalvos) : [];
+// ===============================
+// NOVA LÓGICA COM FIREBASE (ONLINE)
+// ===============================
+
+// 1. Verificar conflito direto na nuvem
+async function verificarConflitoReal(data, hora, duracaoNova) {
+    // Busca agendamentos DAQUELA DATA no servidor
+    const q = window.query(
+        window.collection(window.db, "agendamentos"),
+        window.where("data", "==", data)
+    );
+
+    const querySnapshot = await window.getDocs(q);
+    let conflito = false;
+
+    const inicioNovo = new Date(`${data}T${hora}`);
+    const fimNovo = new Date(inicioNovo.getTime() + duracaoNova * 60000);
+
+    querySnapshot.forEach((doc) => {
+        const ag = doc.data();
+        // Recria as datas do agendamento que veio do banco
+        const inicioExistente = new Date(`${ag.data}T${ag.hora}`);
+        const duracaoExistente = ag.duracao || 30;
+        const fimExistente = new Date(inicioExistente.getTime() + duracaoExistente * 60000);
+
+        // A mesma matemática de colisão, mas agora com dados reais
+        if (inicioNovo < fimExistente && fimNovo > inicioExistente) {
+            conflito = true;
+        }
+    });
+
+    return conflito;
 }
 
-function salvarAgendamentos() {
-    localStorage.setItem('agendamentosBarbearia', JSON.stringify(agendamentos));
+// 2. Salvar na nuvem
+async function salvarNoFirebase(agendamento) {
+    try {
+        await window.addDoc(window.collection(window.db, "agendamentos"), agendamento);
+        return true;
+    } catch (e) {
+        console.error("Erro Firebase:", e);
+        alert("Erro de conexão. Tente novamente.");
+        return false;
+    }
 }
 
-let agendamentos = carregarAgendamentos();
+// 3. Atualize o Listener do Botão (Tem que ser ASYNC agora)
+if (form) {
+    form.addEventListener("submit", async (e) => { // <--- Adicione ASYNC aqui
+        e.preventDefault();
+
+        // ... (pegue os valores dos inputs: nome, telefone, data, hora normalmente) ...
+        // (Mantenha suas validações de dia fechado e horário aqui)
+
+        const duracao = calcularDuracaoTotal(servicosArray);
+
+        // VERIFICAÇÃO PODEROSA NA NUVEM
+        // Mostra um "Carregando..." (opcional, mas bom pra UX)
+        const botaoSubmit = form.querySelector('button[type="submit"]');
+        botaoSubmit.textContent = "Verificando...";
+        botaoSubmit.disabled = true;
+
+        const existeConflito = await verificarConflitoReal(data, hora, duracao);
+
+        if (existeConflito) {
+            botaoSubmit.textContent = "Agendar";
+            botaoSubmit.disabled = false;
+            return alert(`Horário indisponível! Já existe um cliente agendado.`);
+        }
+
+        // Se passou, cria o objeto
+        const novo = criarObjetoAgendamento(nome, telefone, data, hora, servicos, totalStr, servicosArray);
+
+        // Salva na nuvem
+        const salvou = await salvarNoFirebase(novo);
+
+        if (salvou) {
+            // Manda pro Zap
+            const msg = encodeURIComponent(`*Novo Agendamento*\n👤 ${nome}...`); // (seu código do zap)
+            window.open(`https://wa.me/5561984911379?text=${msg}`, "_blank");
+
+            alert("Agendamento Confirmado!");
+            window.location.reload();
+        }
+    });
+}
 
 // ===============================
 // LÓGICA DE DURAÇÃO (30 min por serviço)
 // ===============================
 function calcularDuracaoTotal(servicosArray) {
-    return servicosArray.length * 30;
+    return servicosArray.length * 40;
 }
 
 function criarObjetoAgendamento(nome, telefone, data, hora, servicos, total, servicosArray) {
@@ -62,28 +183,6 @@ function criarObjetoAgendamento(nome, telefone, data, hora, servicos, total, ser
         nome, telefone, data, hora, servicos, total,
         duracao: duracaoTotal
     };
-}
-
-// ===============================
-// VERIFICAÇÃO DE CONFLITO (Intervalo Completo)
-// ===============================
-function verificarConflito(novoData, novoHora, duracaoNova, listaExistente) {
-    const inicioNovo = new Date(`${novoData}T${novoHora}`);
-    const fimNovo = new Date(inicioNovo.getTime() + duracaoNova * 60000);
-
-    for (const ag of listaExistente) {
-        if (ag.data !== novoData) continue;
-
-        const inicioExistente = new Date(`${ag.data}T${ag.hora}`);
-        const duracaoExistente = ag.duracao || 30;
-        const fimExistente = new Date(inicioExistente.getTime() + duracaoExistente * 60000);
-
-        // Se sobrepõe?
-        if (inicioNovo < fimExistente && fimNovo > inicioExistente) {
-            return true;
-        }
-    }
-    return false;
 }
 
 // ===============================
@@ -198,9 +297,20 @@ if (form) {
 
         if (!servicos) return alert("Selecione um serviço.");
 
-        // Regra: Bloqueio de Segunda-feira (1)
-        const diaSemana = new Date(data + "T00:00").getDay();
-        if (diaSemana === 1) return alert("A Barbearia não funciona às segundas-feiras.");
+        // === NOVA LÓGICA DE BLOQUEIO DE DATAS ===
+        const dataObj = new Date(data + "T00:00");
+        const diaSemana = dataObj.getDay();
+
+        // 1. Verifica se é Domingo (0) ou Segunda (1)
+        if (DIAS_SEMANA_FECHADOS.includes(diaSemana)) {
+            return alert("A Barbearia não funciona aos Domingos e Segundas-feiras.");
+        }
+
+        // 2. Verifica se a data está na lista de bloqueados
+        if (DATAS_BLOQUEADAS.includes(data)) {
+            return alert("A Barbearia estará fechada nesta data específica.");
+        }
+        // =========================================
 
         const horaInt = parseInt(hora.split(':')[0]);
         if (horaInt < 9 || horaInt >= 19) return alert("Horário de funcionamento: 09:00 às 19:00.");
