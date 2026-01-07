@@ -1,4 +1,37 @@
 // ===============================
+// ROTINA DE LIMPEZA (GARBAGE COLLECTION)
+// ===============================
+function limparAgendamentosAntigos() {
+    const agora = new Date();
+    // Define o limite como "ontem"
+    agora.setDate(agora.getDate() - 1);
+
+    let agendamentos = carregarAgendamentos();
+    const totalAntes = agendamentos.length;
+
+    // Filtra: Mantém apenas agendamentos futuros ou de hoje
+    agendamentos = agendamentos.filter(ag => {
+        const dataAgendamento = new Date(ag.data + "T" + ag.hora);
+        return dataAgendamento > agora;
+    });
+
+    if (agendamentos.length !== totalAntes) {
+        console.log(`Limpando ${totalAntes - agendamentos.length} agendamentos antigos...`);
+        localStorage.setItem('agendamentosBarbearia', JSON.stringify(agendamentos));
+        // Se estiver na tela de admin, recarrega a lista
+        if (typeof inicializarLista === "function") {
+            inicializarLista();
+        }
+    }
+}
+
+// Chame isso assim que o script carregar
+document.addEventListener('DOMContentLoaded', () => {
+    limparAgendamentosAntigos();
+    // ... resto do seu código ...
+});
+
+// ===============================
 // CONSTANTES E PERSISTÊNCIA (Local Storage)
 // ===============================
 const SENHA_PADRAO = "Atila"; // Senha padrão inicial
