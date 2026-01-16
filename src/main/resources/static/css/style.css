@@ -126,34 +126,35 @@
         }
 
         .foto {
-            margin-bottom: 30px;
-            animation: slideIn 0.6s ease-out;
-            width: 140px;
-            aspect-ratio: 1 / 1; /* força quadrado */
-            border-radius: 50%;
-            overflow: hidden;
-            background: #000; /* fundo da logo */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+                    margin-bottom: 30px;
+                    animation: slideIn 0.6s ease-out;
+                    width: 240px;
+                    border-radius: 50%;
+                    overflow: hidden;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
 
-        .foto img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            border-radius: 20px;
-            border: 4px solid #d4af37;
-            background: #000;
-            padding: 4px;
-            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
-            transition: all 0.3s ease;
-        }
+                .foto img {
+                    width: 150px;
+                        height: 150px;
+                        border-radius: 50%;
+                        border: 4px solid #d4af37; /* Borda Dourada */
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+                        object-fit: cover;
+                        display: block;
+                        margin: 0 auto 20px auto;
 
-        .foto img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 32px rgba(212, 175, 55, 0.3);
-        }
+                        /* ADICIONEI AQUI 👇 */
+                        opacity: 0.85; /* 1.0 é normal, 0.0 é invisível. 0.85 fica bem elegante */
+                        transition: opacity 0.3s ease; /* Efeito suave se passar o mouse */
+                }
+
+                .foto img:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.3);
+                }
 
         /* ===============================
            CARD DE FORMULÁRIO
