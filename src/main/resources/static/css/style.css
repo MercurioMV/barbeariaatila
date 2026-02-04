@@ -1,518 +1,217 @@
 /* ===============================
-           RESET E ESTILIZAÇÃO GLOBAL
-           =============================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 20px;
-            color: #ffffff;
-            min-height: 100vh;
-
-            /* 1. Define o caminho da imagem */
-                background-image: url('../images/barber_background.jpg');
-            /* 2. Ajusta a imagem para cobrir todo o fundo, sem cortar a proporção */
-                background-size: cover;
-            /* 3. Centraliza a imagem na tela */
-                background-position: center center;
-
-                /* 4. Impede que a imagem se repita (geralmente necessário) */
-                background-repeat: no-repeat;
-
-                /* 5. Mantém a imagem fixa se o usuário rolar a página */
-                background-attachment: fixed;
-            }
-        }
-
-        /* ===============================
-           ANIMAÇÕES
-           =============================== */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        /* ===============================
-           TELA DE LOGIN
-           =============================== */
-        #login-page {
-            text-align: center;
-            margin-top: 60px;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .titulo-login {
-            font-size: 28px;
-            margin-bottom: 40px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #d4af37 0%, #f0e68c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .btn {
-            padding: 12px 32px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn.primary {
-            background: linear-gradient(135deg, #d4af37 0%, #f0e68c 100%);
-            color: #000000;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .btn.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-        }
-
-        .btn.primary:active {
-            transform: translateY(0);
-        }
-
-        /* ===============================
-           CONTAINER PRINCIPAL
-           =============================== */
-        .container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .foto {
-                    margin-bottom: 30px;
-                    animation: slideIn 0.6s ease-out;
-                    width: 240px;
-                    border-radius: 50%;
-                    overflow: hidden;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .foto img {
-                    width: 150px;
-                        height: 150px;
-                        border-radius: 50%;
-                        border: 4px solid #d4af37; /* Borda Dourada */
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                        object-fit: cover;
-                        display: block;
-                        margin: 0 auto 20px auto;
-
-                        /* ADICIONEI AQUI 👇 */
-                        opacity: 0.85; /* 1.0 é normal, 0.0 é invisível. 0.85 fica bem elegante */
-                        transition: opacity 0.3s ease; /* Efeito suave se passar o mouse */
-                }
-
-                .foto img:hover {
-                    transform: scale(1.05);
-                    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.3);
-                }
-
-        /* ===============================
-           CARD DE FORMULÁRIO
-           =============================== */
-        .card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #ffffff;
-            padding: 32px 28px;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-            color: #222;
-            animation: fadeIn 0.6s ease-out 0.1s both;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 12px;
-            color: #110f0f;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        h3 {
-            text-align: center;
-            margin-top: 24px;
-            color: #2b2421;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .linha-separadora {
-            border: none;
-            border-top: 1px solid #e0e0e0;
-            margin: 16px 0;
-            width: 100%;
-        }
-
-        p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #444;
-            margin: 8px 0;
-        }
-
-        label {
-            font-size: 13px;
-            margin-top: 12px;
-            display: block;
-            color: #222;
-            text-align: left;
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        input[type="tel"],
-        input[type="date"],
-        input[type="time"] {
-            padding: 10px 12px;
-            margin-top: 6px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: #fafafa;
-        }
-
-        input[type="text"]:focus,
-        input[type="tel"]:focus,
-        input[type="date"]:focus,
-        input[type="time"]:focus {
-            outline: none;
-            border-color: #d4af37;
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-        }
-
-        /* ===============================
-           SERVIÇOS
-           =============================== */
-        .servicos {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 12px 0;
-            width: 100%;
-        }
-
-        .servicos label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8f8f8;
-            border: 2px solid #e0e0e0;
-            padding: 10px 12px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .servicos label:hover {
-            background: #f0f0f0;
-            border-color: #d4af37;
-        }
-
-        .servicos input[type="checkbox"] {
-            transform: scale(1.3);
-            accent-color: #d4af37;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .servicos input[type="checkbox"]:checked {
-            transform: scale(1.4);
-        }
-
-        /* ===============================
-           BOTÕES
-           =============================== */
-        .botao {
-            margin-top: 16px;
-            padding: 11px 20px;
-            background: #000000;
-            color: #f8f8f8;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .botao:hover {
-            background: #222;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-        }
-
-        .botao:active {
-            transform: translateY(0);
-        }
-
-        /* ===============================
-           ETAPAS
-           =============================== */
-        .etapa {
-            display: none;
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        .etapa.ativa {
-            display: block;
-        }
-
-        /* ===============================
-           LISTA DE AGENDAMENTOS
-           =============================== */
-        #lista-agendamentos {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            margin-top: 16px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-
-        #lista-agendamentos::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #lista-agendamentos::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 10px;
-        }
-
-        #lista-agendamentos::-webkit-scrollbar-thumb {
-            background: #d4af37;
-            border-radius: 10px;
-        }
-
-        .agendamento-card {
-            background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
-            padding: 14px 16px;
-            border-radius: 10px;
-            width: 100%;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            color: #222;
-            text-align: left;
-            border-left: 4px solid #d4af37;
-            transition: all 0.3s ease;
-            animation: slideIn 0.4s ease-out;
-        }
-
-        .agendamento-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-            transform: translateX(4px);
-        }
-
-        .agendamento-card h4 {
-            margin-bottom: 6px;
-            color: #000000;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .agendamento-card p {
-            margin: 4px 0;
-            font-size: 13px;
-            color: #555;
-        }
-
-        /* ===============================
-           RESPONSIVIDADE
-           =============================== */
-        @media (max-width: 480px) {
-            body {
-                padding: 16px;
-            }
-
-            .card {
-                width: 100%;
-                max-width: 100%;
-                padding: 24px 20px;
-            }
-
-            .foto img {
-                width: 120px;
-                height: 120px;
-            }
-
-            h2 {
-                font-size: 20px;
-            }
-
-            .titulo-login {
-                font-size: 22px;
-                margin-bottom: 30px;
-            }
-
-            .btn {
-                padding: 10px 24px;
-                font-size: 14px;
-            }
-        }
-
-        /* ===============================
-           ESTILIZAÇÃO ADMIN (NOVA)
-           =============================== */
-        .container-admin {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-        }
-
-        .card-admin {
-            background: #1a1a1a;
-            color: #ffffff;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            padding: 30px;
-            max-width: 100%;
-            width: 100%;
-            text-align: left;
-        }
-
-        .card-admin h2 {
-            color: #d4af37;
-        }
-
-        /* Botão de remoção */
-        .btn-remover {
-            float: right;
-            background: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 4px 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        .btn-remover:hover {
-            background: #cc0000;
-        }
-
-        /* Ajuste para cards de agendamento na tela admin */
-        .card-admin .agendamento-card {
-            background: #252525;
-            border-left-color: #f0e68c;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-admin .agendamento-card h4 {
-            color: #f0e68c;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-admin .agendamento-card p {
-            color: #ccc;
-        }
-
-/* ===============================
-   AJUSTES PARA ADMIN SUTIL
+   RESET GLOBAL
    =============================== */
-
-#admin-link-subtle {
-    position: fixed; /* Fixa ele na tela */
-    bottom: 0;      /* No rodapé */
-    right: 0;       /* No canto inferior direito */
-    width: 20px;    /* Tamanho pequeno para o clique */
-    height: 20px;
-    background-color: transparent; /* Invisível */
-    color: transparent; /* O texto '.' também é invisível */
-    cursor: pointer;
-    z-index: 1000; /* Garante que fique acima de outros elementos */
-    font-size: 1px; /* Torna o texto minúsculo */
-    line-height: 1;
-    overflow: hidden;
-    text-decoration: none;
+* {
+    margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
-
-/* ... resto do seu CSS ... */
 
 /* ===============================
-   LOGO COMO BOTÃO SECRETO
+   BODY / FUNDO
    =============================== */
-.link-logo-secreto {
-    text-decoration: none;
-    border: none;
-    cursor: default; /* Mantém o cursor normal para não parecer clicável */
-    display: inline-block;
+html, body {
+    min-height: 100vh;
 }
 
-.link-logo-secreto img {
-    /* Mantém os estilos originais da imagem */
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+
+    background-image: url("../images/fotofundo.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    color: #fff;
+}
+
+/* ===============================
+   CONTAINER
+   =============================== */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* ===============================
+   LOGO
+   =============================== */
+.foto {
+    margin-bottom: 20px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+
+    }
+.foto img {
+    width: 150px;   /* antes estava 120px */
+    height: auto;
     display: block;
-    /* Remove borda azul padrão de links em alguns navegadores */
-    border: 4px solid #d4af37;
+    margin: 0 auto 10px auto;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+
+/* ===============================
+   CARD (QUADRADO BRANCO)
+   =============================== */
+.card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 330px; /* antes estava ~380px */
+    padding: 30px 26px;
+    border-radius: 20px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    text-align: center;
+    color: #222;
+}
+
+
+/* ===============================
+   TÍTULOS E TEXTOS
+   =============================== */
+.card h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: #111;
+}
+
+.card p {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.5;
+    margin: 6px 0;
+}
+
+.linha-separadora {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 16px 0;
+}
+
+/* ===============================
+   FORMULÁRIO
+   =============================== */
+form {
+    width: 100%;
+}
+
+label {
+    display: block;
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #222;
+    text-align: left;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="date"],
+input[type="time"] {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    font-size: 14px;
+    background: #fafafa;
+    text-align: center;
+}
+
+input:focus {
+    outline: none;
+    border-color: #000;
+    background: #fff;
+}
+
+/* ===============================
+   BOTÕES
+   =============================== */
+.botao {
+    margin-top: 18px;
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
+
+.botao:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.45);
+}
+
+/* ===============================
+   ETAPAS
+   =============================== */
+.etapa {
+    display: none;
+}
+
+.etapa.ativa {
+    display: block;
+}
+
+/* ===============================
+   SERVIÇOS
+   =============================== */
+.servicos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.servicos label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: #f8f8f8;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.servicos input {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* ===============================
+   RESPONSIVO
+   =============================== */
+@media (max-width: 480px) {
+    .foto img {
+        width: 105px;
+    }
+
+    .card {
+        padding: 26px 20px;
+    }
+
+    .card h2 {
+        font-size: 20px;
+    }
 }
